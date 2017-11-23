@@ -1,0 +1,37 @@
+baseurl = "/"
+languageCode = "en-us"
+title = "BIOF339 Blog"
+author = "Abhijit Dasgupta"
+theme = "hugo-theme-minos"
+googleAnalytics = ""
+disqusShortname = ""
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
+[permalinks]
+    post = "/:year/:month/:day/:slug/"
+
+[[menu.main]]
+    name = "Class home"
+    url = "http://www.araastat.com/BIOF339_PracticalR/index.html"
+    
+
+[params]
+    AuthorName = "Abhijit Dasgupta"
+    description = "Blogging about R issues arising from the class"
+    smartToc = true
+    pagination = 5
+   # options for highlight.js (version, additional languages, and theme)
+    highlightjsVersion = "9.11.0"
+    highlightjsCDN = "//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"
+    highlightjsLang = ["r", "yaml"]
+    highlightjsTheme = "monokai"
+
+    MathJaxCDN = "//cdn.bootcss.com"
+    MathJaxVersion = "2.7.1"
+
+   [params.logo]
+   url = "PracticalR.png"
+   width = 150
+   height = 50
+   alt = "Logo"
+
