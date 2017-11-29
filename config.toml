@@ -13,6 +13,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[menu.main]]
     name = "Class home"
     url = "http://www.araastat.com/BIOF339_PracticalR/index.html"
+[[menu.main]]
+    name = "Tags"
+    url = "tags/index.html"
     
 
 [params]

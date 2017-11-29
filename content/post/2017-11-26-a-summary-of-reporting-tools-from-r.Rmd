@@ -1,0 +1,55 @@
+---
+title: A summary of reporting tools from R
+author: Abhijit Dasgupta
+date: '2017-11-26'
+slug: a-summary-of-reporting-tools-from-r
+draft: true
+categories:
+  - R
+tags:
+  - Reporting
+---
+
+# Introduction
+
+The data science pipeline often leads to some sort of report, typically a research paper in 
+academia, or a data product in industry. Since this class caters more to the academia/research side, let's describe some of the ways we can report the results of our data analyses. 
+
+## Literate programming
+
+The CRAN Task Views page on [Reproducible Research](https://cran.r-project.org/web/views/ReproducibleResearch.html) describes reproducible research as follows:
+
+> The goal of reproducible research is to tie specific instructions to data analysis and experimental data so that scholarship can be recreated, better understood and verified.
+
+The basic idea behind this concept in R is the idea of _literate programming_, where one
+creates a document that combines both content and code and uses a program to replace the code with
+the results of that code so that the final document contains both content and the results of 
+analysis. This functionality has been baked into R from the beginning with the `Sweave` function; 
+this function took in a _LaTeX_ document with code interspersed andproduced a final document, 
+typically in PDF format, that "weaved" the text and the results of the code, and created a formatted
+final document. _LaTeX_ was used because it (a) had very good formatting capabilities through style files, (b) allows fine control of the document,  and (b) was the _de facto_ way of writing mathematics and computer science papers.
+
+### The `rmarkdown` revolution
+
+Yihui Xie created the R package [`knitr`](https://yihui.name/knitr/) in 2012 as a potential
+replacement for `Sweave`. It took the best of Sweave, added features like caching code for speed,
+and added functionality like formatting R code, creating flexibility in handling graphics and other [features](https://yihui.name/knitr/). It takes a file containing text and R code and processes it by replacing code with results after
+running it through R.
+
+One of the most significant changes that `knitr` brought was the ability to use [`Markdown`](https://daringfireball.net/projects/markdown/syntax), which is a lightweight text
+markup language that is easy to read and easy to write, as the source file for literate programming
+rather than _LaTeX_. This made literate programming and reporting in R far more accessible to the 
+general R user than having to learn the rather complex _LaTeX_ syntax, and, in my opinion, created 
+a revolution in how the results of analyses are reported from R. This also led to the development of a particular easy syntax, [`rmarkdown`](http://rmarkdown.rstudio.com) that allowed a wide variety 
+of documents to be created interlacing text, graphics and analytic results.
+
+The second important aspect of using `rmarkdown` was the development of 
+[`pandoc`](http://pandoc.org/), a program that can take a markdown document and convert it into
+many different formats, including Microsoft Word, HTML, PDF (using _LaTeX_), and HTML slides. This 
+made markdown a key format for generating documents for distribution and presentation. The`pandoc` program is very powerful and customizable and allows the use of templates, so it allowed the automation of analytic reports from R using `knitr` and `pandoc` in combination. This pipeline
+was codified by the RStudio folk who developed the [`rmarkdown`](http://rmarkdown.rstudio.com) R package. The possibilities of creating analyses-driven documents using `rmarkdown` can be seen
+in the [R Markdown Gallery](http://rmarkdown.rstudio.com/gallery.html)
+
+#### Other input formats
+
+You can still use `knitr` with other input formats. For example, 

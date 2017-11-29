@@ -1,0 +1,43 @@
+---
+title: Working with dates in R
+author: Abhijit Dasgupta
+date: '2017-11-23'
+slug: working-with-dates-in-r
+draft: true
+categories: ['R']
+tags:
+  - Data types
+---
+
+### The `Date` class
+
+R provides a `Date` class, which represents dates internally as number of days since 
+January 1, 1970. Date objects are typically created from character strings that represent dates, but
+require specifying the format. The default format is `YYYY-MM-DD`. 
+```{r}
+dt <- as.Date('2017-11-23')
+dt <- as.Date('11/23/17', format = '%m/%d/%y') # Gives the same answer
+```
+
+You can also format dates for printing into most formats:
+```{r}
+format(dt, '%B %d, %Y')
+format(dt, '%b %d, %Y')
+format(dt, '%m/%d/%y')
+format(dt, '%d/%m/%y')
+format(dt, '%Y-%m-%d')
+```
+
+The numeric representation of this date can be seen by using the `as.numeric` function:
+```{r}
+as.numeric(dt)
+```
+#### Working with dates from SAS
+
+SAS also represents dates as numbers internally, but as days since January 1, __1960__. This can
+lead to some fun times in converting dates. The function `haven::read_sas` does the right thing and creates the correct dates in R as `Date` objects.
+
+The ambiguity in this origin story makes it probably a good practice to store dates as characters, 
+and convert them "on the fly" when you need to do some date manipulation. The preferred way to store
+dates as text is in the form `YYYY-MM-DD`. The simple reason for this is that this format allows 
+alphabetical sorting to be the same as sorting by time. 
