@@ -1,0 +1,81 @@
+---
+title: Function documentation
+author: Abhijit Dasgupta
+date: '2018-11-16'
+slug: function-documentation
+draft: false
+categories:
+  - R
+tags:
+  - Good Practices
+menu: ''
+---
+
+## Writing functions
+
+We learned how to write functions in class this week. As a reminder, a function takes a
+particular structure, starting with the keyword `function`. In RStudio, if you type `fun [TAB]` (i.e., type `fun` and then hit the tab key), you get the following function scaffolding:
+
+```{r, eval = F}
+name <- function(variables) {
+  
+}
+```
+
+`name` is the name of the function, the inputs/arguments go inside the `()`, and the lines of 
+code that comprise the function go between the `{}` in separate lines. A simplistic function might be to get the mean and median of a vector of numbers:
+```{r}
+summaries <- function(x) {
+  mn <- mean(x, na.rm=T)
+  md <- median(x, na.rm=T)
+  return(tibble('mean' = mn, 'median' = md))
+}
+```
+
+> I always recommend putting whatever the function returns within the `return` function, so there is no confusion about what the results/output of the function is
+
+## Documenting your function
+
+In a simple function like this, it is straightforward to understand what is going on. But you'll soon be writing more complex functions, where you need the input(s) to be of a certain type and the resulting output to be of some type, and you also want to remind yourself in 3 months or a year what this function was written for. There is a very nice package called `roxygen2` that allows the documentation to stay with the function. Though the package was built to help document functions that are part of R packages, it can be useful for _ad hoc_ functions within your analysis project as well. And best of all, it is baked in to RStudio!.
+
+To create the documentation scaffolding, put your cursor on the first line of the function, and then either type `Ctrl-Alt-Shift-R` (Win/Linux) or `Cmd-Alt-Shift-R` (Mac) or, from the menu, `Code > Insert Roxygen Skeleton`. This is what that scaffolding looks like:
+
+```{r}
+#' Title
+#'
+#' @param x 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+summaries <- function(x) {
+  mn <- mean(x, na.rm=T)
+  md <- median(x, na.rm=T)
+  return(tibble('mean' = mn, 'median' = md))
+}
+```
+
+The `roxygen` documentation lines start with  `#'`, which R treats like a line of comments and ignores. The scaffolding provides a particular format to the documentation. The first line should be the title of the documentation, then you can skip one line (keeping the `#'` on that line) and then write paragraphs describing the function. The `@param` fields are auto-filled with the explicit arguments in your function, and you can then describe what those arguments mean. The `@return` field describes what the result of your function is. The `@export` tag is useful when you're building packages, and indicates that the function will be part of the main package functions. Lastly, `@examples` asks you to optionally provide an example of how the function works. So, for the example I'm using here, we might fill out the documentation like this: 
+
+```{r}
+#' Summarizing data
+#' 
+#' This function summarizes the data in a numerical vector by computing the mean and median of
+#' the data
+#'
+#' @param x A numeric vector
+#'
+#' @return A tibble that gives the mean and median of the data in `x`, 
+#' @export
+#'
+#' @examples
+#' summaries(mtcars$mpg)
+summaries <- function(x) {
+  mn <- mean(x, na.rm=T)
+  md <- median(x, na.rm=T)
+  return(tibble('mean' = mn, 'median' = md))
+}
+```
+
+More detail about roxygen, and it's role in documenting functions within packages, are available from Karl Broman's excellent [primer](https://kbroman.org/pkg_primer/pages/docs.html){target="_blank"}
