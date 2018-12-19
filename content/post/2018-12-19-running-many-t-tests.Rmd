@@ -1,0 +1,60 @@
+---
+title: Running many t-tests
+author: Abhijit Dasgupta
+date: '2018-12-19'
+slug: running-many-t-tests
+categories:
+  - R
+tags:
+  - tidyverse
+  - modeling
+---
+
+```{r setup, include = F}
+knitr::opts_chunk$set(message = F, warning = F)
+options(scipen = 999)
+```
+
+Suppose you have an expression dataset, and want to run t-tests for several genes/probes comparing 
+two conditions. We can use tidyverse concepts to do this. First, let's get some data.
+
+```{r generate-data}
+library(tidyverse)
+library(broom)
+library(affy)
+# BiocManager::install('affydata')
+data(Dilution, package = 'affydata')
+eset <- mas5(Dilution) # pre-proccessing
+dat <- exprs(eset) # extract expressions
+Dat <- as.data.frame(t(dat)) %>% rownames_to_column('sample') %>% as_tibble() %>% 
+  mutate(scanner = as_factor(pData(Dilution)$scanner)) %>% # Add "scanner" from phenoData
+  select(sample, scanner, everything()) # Re-order columns
+```
+
+Now, this dataset has `r ncol(Dat)-2` probesets, and we want to run a t-test on each one,
+comparing the scanner types (which are of two types). There are a couple of ways to do this, 
+which take about the same amount of time, and create a tibble of results, with one row for each
+probeset. The first is a direct application of `purrr::map`, acknowledging that a tibble or data.frame is basically a list of columns, and `map` can apply a function to each column and get the results. 
+
+```{r method1}
+results1 <- Dat %>% select(-sample, -scanner) %>% # Keep only probeset data
+  map(~ tidy(t.test(. ~ Dat$scanner))) %>% # T-test of each column against scanner, and tidy
+  bind_rows(.id = 'probe') # Puts it all together into a data frame
+head(results1)
+```
+
+The second approach is what is [recommended](https://broom.tidyverse.org/articles/broom_and_dplyr.html){target="_blank"} in 
+the `broom` package; you create a list-column of tibbles using `nest`, one per probeset, run t-tests on each tibble using `map`, and then `unnest` to put it all together. This is done after 
+using `gather` to convert the dataset from wide to tall form. 
+
+```{r method2}
+results2 <- Dat %>% 
+  gather(probe, value, -sample, -scanner) %>% # wide-to-tall
+  nest(-probe) %>% # Create nested data frames using list-columns
+  mutate(tests = map(data, ~tidy(t.test(value ~ scanner, data = .)))) %>% # run t-tests
+  select(-data) %>% 
+  unnest() # Create final data.frame
+head(results2)
+```
+
+
